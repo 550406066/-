@@ -24,7 +24,7 @@ export default {
   },
 mounted() {
   this.initCharts();
-console.log(this.$refs)
+
 },
 methods: {
  initCharts() {

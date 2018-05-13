@@ -18,6 +18,8 @@
 </template>
 
 <script>
+var routers = [];
+import MenuUtils from "@/utils/MenuUtils";
 export default {
   name: "HelloWorld",
   data() {
@@ -25,40 +27,48 @@ export default {
       msg: "欢迎使用后端模板",
       ruleForm: {
         name: "",
-        password: "",
-     
+        password: ""
       },
       rules: {
-          name: [
-            { required: true, message: '请输入手机号或邮箱', trigger: 'blur' },
-      
-          ],
-          password: [
-            { required: true, message: '请输入密码', trigger: 'change' }
-          ]
-
-  }
+        name: [
+          { required: true, message: "请输入手机号或邮箱", trigger: "blur" }
+        ],
+        password: [{ required: true, message: "请输入密码", trigger: "change" }]
+      }
     };
   },
-   methods: {
-      submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-          this.$router.push('form')
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-      },
-      seeMe() {
-        window.location.href ="https://github.com/550406066"
-      }
+  mounted: function() {},
+  methods: {
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.$http.get("/api/getRouter").then(
+            response => {
+              this.login(response.data.data);
+              this.$router.addRoutes(routers);
+              this.$router.push({ path: "/main/form" });
+            },
+            response => {
+              console.log("error");
+            }
+          );
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    login(data) {
+      window.sessionStorage.setItem("user", JSON.stringify(data));
+      MenuUtils(routers, data);
     },
 
+    seeMe() {
+      window.location.href = "https://github.com/550406066";
+    }
+  }
 };
 </script>
-
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h1,
